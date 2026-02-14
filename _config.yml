@@ -1,0 +1,39 @@
+title: "Healthy is fresh" - Rural Colombia Food Study
+description: Online supplementary materials for participatory study of meal ideals and barriers shaping food choice in rural Colombia
+theme: minima
+author:
+  name: Ana María Arcila-Agudelo et al.
+  email: ana.arcila@uniremington.edu.co 
+
+show_downloads: false
+
+# Social media
+github_username: jcmunozmora
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Exclude from processing
+exclude:
+  - .Rproj.user/
+  - .Rhistory
+  - .RData
+  - .DS_Store
+  - "*.Rproj"
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:path/
+
+# Navigation
+header_pages:
+  - README.md

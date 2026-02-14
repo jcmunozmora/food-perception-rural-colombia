@@ -1,0 +1,116 @@
+# ============================================================================
+# GITIGNORE - Food Perception Rural Colombia Study
+# ============================================================================
+
+# ---- R / RStudio ----
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+.Rapp.history
+
+# Session Data files
+.RData
+.RDataTmp
+
+# User-specific files
+.Ruserdata
+
+# RMarkdown generated files
+*.html
+*.pdf
+*.png
+*.jpg
+!graphs/*.png
+!graphs/*.pdf
+
+# ---- macOS ----
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+
+# ---- Windows ----
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ---- Archivos temporales ----
+*~
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*.log
+
+# ---- Excel ----
+~$*.xlsx
+~$*.xls
+
+# ---- Word ----
+~$*.docx
+~$*.doc
+
+# ---- Archivos grandes / Datos sensibles ----
+# (Las transcripciones completas y audios no deben subirse)
+Participatory_Workshop_Evidence-Transcriptions/Transcriptions/**/*.docx
+Participatory_Workshop_Evidence-Transcriptions/Transcriptions/**/*.mp3
+Participatory_Workshop_Evidence-Transcriptions/Transcriptions/**/*.wav
+Participatory_Workshop_Evidence-Transcriptions/Transcriptions/**/*.m4a
+
+# Excepto los archivos .txt que ya están anonimizados
+!Participatory_Workshop_Evidence-Transcriptions/Transcriptions/**/*.txt
+
+# ---- Outputs temporales ----
+outputs/
+temp/
+cache/
+
+# ---- GitHub Pages / Jekyll ----
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+vendor/
+Gemfile.lock
+
+# ---- IDEs ----
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ---- Python (si se usa) ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+pip-log.txt
+
+# ---- Git ----
+*.orig
+
+# ============================================================================
+# NOTAS:
+# - Los datasets procesados (.rds, .xlsx en Analysis_Quantitative) SÍ se incluyen
+# - Los gráficos generados en graphs/ SÍ se incluyen
+# - Los formularios PDF SÍ se incluyen
+# - Las fotografías de platos SÍ se incluyen (ya anonimizadas, sin rostros)
+# - Las transcripciones completas NO se incluyen (datos sensibles)
+# ============================================================================

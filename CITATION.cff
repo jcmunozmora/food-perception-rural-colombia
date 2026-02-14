@@ -1,0 +1,72 @@
+cff-version: 1.2.0
+message: "If you use these supplementary materials, please cite as below."
+type: dataset
+title: "Supplementary Materials: Healthy is fresh - Rural Colombia Food Study"
+authors:
+  - family-names: "Arcila-Agudelo"
+    given-names: "Ana María"
+    orcid: "https://orcid.org/TBD"
+    affiliation: "Corporación Universitaria Remington"
+  - family-names: "Cardona-Trujillo"
+    given-names: "Harold"
+    orcid: "https://orcid.org/0000-0002-9260-8798"
+    affiliation: "Universidad EAFIT"
+  - family-names: "Herazo-Castelblanco"
+    given-names: "Ana Sofia"
+    affiliation: "Universidad EAFIT"
+  - family-names: "Mejía-Gil"
+    given-names: "María Claudia"
+    orcid: "https://orcid.org/0000-0003-4162-6635"
+    affiliation: "Universidad EAFIT"
+  - family-names: "Muñoz-Mora"
+    given-names: "Juan Carlos"
+    orcid: "https://orcid.org/0000-0002-7304-8115"
+    affiliation: "Universidad EAFIT"
+  - family-names: "Ortiz-Pradilla"
+    given-names: "Tatiana"
+    orcid: "https://orcid.org/0000-0001-9947-027X"
+    affiliation: "Universidad EAFIT"
+repository-code: "https://github.com/jcmunozmora/food-perception-rural-colombia"
+url: "https://jcmunozmora.github.io/food-perception-rural-colombia"
+abstract: >
+  Online supplementary materials for the study "Healthy is fresh": 
+  A participatory study of meal ideals and barriers shaping food 
+  choice in rural Colombia. Includes workshop materials, quantitative 
+  analysis scripts, qualitative data, and evidence from participatory 
+  co-design sessions with 41 adults across three rural subregions 
+  of Antioquia, Colombia.
+keywords:
+  - food choice
+  - healthy eating perceptions
+  - meal ideals
+  - participatory co-design
+  - food choice barriers
+  - rural food environment
+  - Colombia
+  - nutritional benchmarking
+  - GABAS
+  - RIEN
+license: CC-BY-4.0
+version: 1.0.0
+date-released: "2026-02-14"
+identifiers:
+  - type: url
+    value: "https://github.com/jcmunozmora/food-perception-rural-colombia"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Arcila-Agudelo"
+      given-names: "Ana María"
+    - family-names: "Cardona-Trujillo"
+      given-names: "Harold"
+    - family-names: "Herazo-Castelblanco"
+      given-names: "Ana Sofia"
+    - family-names: "Mejía-Gil"
+      given-names: "María Claudia"
+    - family-names: "Muñoz-Mora"
+      given-names: "Juan Carlos"
+    - family-names: "Ortiz-Pradilla"
+      given-names: "Tatiana"
+  title: "Healthy is fresh: A participatory study of meal ideals and barriers shaping food choice in rural Colombia"
+  year: 2026
+  journal: "[To be confirmed during editorial process]"
