@@ -22,8 +22,18 @@
 *.pdf
 *.png
 *.jpg
+*.jpeg
 !graphs/*.png
 !graphs/*.pdf
+
+# ---- Exceptions for repository documentation ----
+# Allow specific files needed for GitHub Pages
+!Arcila_etat_2026.pdf
+!Analysis_Quantitative/analysis.html
+!Analysis_Quantitative/panel_b_heatmap.pdf
+!Participatory_Workshop_Evidence-Transcriptions/Pictures/**/*.png
+!Participatory_Workshop_Evidence-Transcriptions/Pictures/**/*.jpg
+!Participatory_Workshop_Evidence-Transcriptions/Pictures/**/*.jpeg
 
 # ---- macOS ----
 .DS_Store

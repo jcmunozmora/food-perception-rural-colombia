@@ -117,9 +117,9 @@ Quantitative analysis compares co-designed menus with Colombian food-based dieta
 
 ### Main Results
 
-![Nutritional Adequacy](Analysis_Quantitative/panel_b_heatmap.pdf)
-
 **Figure:** Nutritional adequacy (% RIEN) of co-designed ideal menus by age group. Menus achieved higher adequacy for fats and sodium, and lower adequacy for calcium and iron.
+
+📊 [View Nutritional Adequacy Heatmap (PDF)](Analysis_Quantitative/panel_b_heatmap.pdf)
 
 ---
 
