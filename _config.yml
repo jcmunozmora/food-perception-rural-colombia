@@ -36,4 +36,8 @@ collections:
 
 # Navigation
 header_pages:
-  - README.md
+  - index.md
+  - WORKSHOP.md
+  - QUICKSTART.md
+  - AUTHORS.md
+  - CONTRIBUTING.md
