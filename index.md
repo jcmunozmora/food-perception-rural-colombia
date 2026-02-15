@@ -13,34 +13,14 @@ title: Home
 
 ---
 
-## 🚀 Quick Navigation
+## Quick Navigation
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
-  <a href="#study-overview" style="padding: 15px; background: #f0f7ff; border-radius: 8px; text-decoration: none; border: 1px solid #0366d6;">
-    <strong>🔬 Study Overview</strong><br/>
-    <small>Research design & key findings</small>
-  </a>
-  <a href="#quantitative-analysis" style="padding: 15px; background: #f0fff4; border-radius: 8px; text-decoration: none; border: 1px solid #28a745;">
-    <strong>📊 Quantitative Data</strong><br/>
-    <small>Nutritional benchmarking</small>
-  </a>
-  <a href="#qualitative-analysis" style="padding: 15px; background: #fff5f5; border-radius: 8px; text-decoration: none; border: 1px solid #d73a49;">
-    <strong>📝 Qualitative Analysis</strong><br/>
-    <small>Thematic coding & insights</small>
-  </a>
-  <a href="WORKSHOP.md" style="padding: 15px; background: #fffbf0; border-radius: 8px; text-decoration: none; border: 1px solid #ffd700;">
-    <strong>🎨 Workshop Gallery</strong><br/>
-    <small>Photos & methodology</small>
-  </a>
-  <a href="QUICKSTART.md" style="padding: 15px; background: #f5f0ff; border-radius: 8px; text-decoration: none; border: 1px solid #6f42c1;">
-    <strong>⚡ Quick Start</strong><br/>
-    <small>Reproduce the analysis</small>
-  </a>
-  <a href="#open-data" style="padding: 15px; background: #f0f0f0; border-radius: 8px; text-decoration: none; border: 1px solid #586069;">
-    <strong>💾 Open Data</strong><br/>
-    <small>Datasets & scripts</small>
-  </a>
-</div>
+- [Study Overview](#study-overview) - Research design & key findings
+- [Quantitative Analysis](#quantitative-analysis) - Nutritional benchmarking
+- [Qualitative Analysis](#qualitative-analysis) - Thematic coding & insights  
+- [Workshop Gallery](WORKSHOP.md) - Photos & methodology
+- [Quick Start](QUICKSTART.md) - Reproduce the analysis
+- [Open Data](#open-data) - Datasets & scripts
 
 ---
 
@@ -71,9 +51,7 @@ People often use simple rules of thumb to decide what to eat, yet these "healthy
 
 ---
 
-## 🔬 Study Overview
-
-<div style="background: #f6f8fa; padding: 20px; border-radius: 8px; margin: 15px 0;">
+## Study Overview
 
 ### Research Context
 
@@ -81,10 +59,10 @@ In rural Colombia, we explored how adults define "healthy eating," how they cons
 
 ### Participants
 
-**41 adults** (18-70 years) from three rural subregions of Antioquia:
-- 🏙️ **Medellín** (urban reference)
-- 🌄 **Guarne** (rural)
-- 🏔️ **Santa Rosa de Osos** (rural)
+**41 adults (18-70 years)** from three rural subregions of Antioquia, Colombia:
+- **Medellín** (urban reference)
+- **Guarne** (rural)
+- **Santa Rosa de Osos** (rural)
 
 ### Methodology
 
@@ -95,49 +73,44 @@ In rural Colombia, we explored how adults define "healthy eating," how they cons
 - Group discussions on barriers and facilitators
 
 **Nutritional benchmarking** against Colombian standards:
-- **GABAS** (Guías Alimentarias Basadas en Alimentos)
-- **RIEN** (Recomendaciones de Ingesta de Energía y Nutrientes)
+- **GABAS** (Guías Alimentarias Basadas en Alimentos) - Food-Based Dietary Guidelines
+- **RIEN** (Recomendaciones de Ingesta de Energía y Nutrientes) - Recommended Nutrient Intakes
 
-</div>
-
-### 🔑 Key Findings
+### Key Findings
 
 | Finding | Description |
 |---------|-------------|
-| 🥬 **"Fresh = Healthy"** | Participants consistently define healthy eating as "fresh" and "home-prepared" |
-| 📉 **Nutrient Gaps** | Co-designed menus showed less vegetables and dairy than recommended |
-| 🧂 **Sodium Excess** | Ideal menus tended to exceed recommended sodium limits |
-| ⚖️ **Intention-Action Gap** | Self-ratings at 2.5-3.5/5.0 indicate perceived gap between ideals and practice |
-| 🚧 **Real-World Barriers** | Cost, access, time, habits, and emotional strain — not lack of knowledge |
+| **"Fresh = Healthy"** | Participants consistently define healthy eating as "fresh" and "home-prepared" |
+| **Nutrient Gaps** | Co-designed menus showed less vegetables and dairy than recommended |
+| **Sodium Excess** | Ideal menus tended to exceed recommended sodium limits |
+| **Intention-Action Gap** | Self-ratings at 2.5-3.5/5.0 indicate perceived gap between ideals and practice |
+| **Real-World Barriers** | Cost, access, time, habits, and emotional strain — not lack of knowledge |
 
-[📄 **Read the full paper**](Arcila_etat_2026.pdf)
+[Read the full paper (PDF)](Arcila_etat_2026.pdf)
 
 ---
 
-## 📊 Quantitative Analysis
-
-<div style="background: #f0fff4; padding: 20px; border-radius: 8px; border-left: 4px solid #28a745; margin: 15px 0;">
+## Quantitative Analysis
 
 ### Nutritional Benchmarking of Co-designed Menus
 
 Comprehensive analysis comparing workshop meal patterns against Colombian dietary guidelines.
 
-#### 📈 Analysis Components
-
+**Analysis Components:**
 - **GABAS Analysis:** Food group servings vs. recommendations
 - **RIEN Analysis:** Energy, macronutrients, and micronutrients adequacy
 - **Visualizations:** Interactive graphs, heatmaps, and adequacy plots
 
-#### 📁 Resources
+**Resources:**
 
 | Resource | Description |
 |----------|-------------|
-| [📊 **Interactive Report**](Analysis_Quantitative/analysis.html) | Full Quarto analysis with integrated code |
-| [📂 **R Scripts**](Analysis_Quantitative/) | All analysis scripts (01-04) |
-| [📸 **Graphs**](Analysis_Quantitative/graphs/) | Publication-ready figures |
-| [💾 **Datasets**](Analysis_Quantitative/) | Processed data (GABAS & RIEN) |
+| [Interactive Report](Analysis_Quantitative/analysis.html) | Full Quarto analysis with integrated code |
+| [R Scripts](Analysis_Quantitative/) | All analysis scripts (01-04) |
+| [Graphs](Analysis_Quantitative/graphs/) | Publication-ready figures |
+| [Datasets](Analysis_Quantitative/) | Processed data (GABAS & RIEN) |
 
-#### ⚡ Quick Start
+**Quick Start:**
 
 ```r
 # Run complete analysis
@@ -147,108 +120,89 @@ Rscript "03_Gen_Graph_GABAS.R"       # GABAS graphs
 Rscript "04_Gen_Graph_Nutrients.R"   # Nutrient heatmap
 ```
 
-Or [**view the interactive Quarto report**](Analysis_Quantitative/analysis.html) for the complete analysis.
-
-</div>
+Or [view the interactive Quarto report](Analysis_Quantitative/analysis.html) for the complete analysis.
 
 ---
 
-## 📝 Qualitative Analysis
-
-<div style="background: #fff5f5; padding: 20px; border-radius: 8px; border-left: 4px solid #d73a49; margin: 15px 0;">
+## Qualitative Analysis
 
 ### Thematic Analysis of Workshop Discussions
 
 In-depth analysis of transcriptions to understand meanings, barriers, and decision-making processes.
 
-#### 🔍 Key Themes
+**Key Themes:**
 
 | Theme | Focus |
 |-------|-------|
-| 💭 **Meanings** | How participants define "healthy eating" |
-| 🎯 **Decision Rules** | Everyday heuristics guiding food choices |
-| 🚧 **Barriers** | Affordability, access, time, taste, emotions |
-| 📏 **Gap Analysis** | Differences between ideals and practice |
+| **Meanings** | How participants define "healthy eating" |
+| **Decision Rules** | Everyday heuristics guiding food choices |
+| **Barriers** | Affordability, access, time, taste, emotions |
+| **Gap Analysis** | Differences between ideals and practice |
 
-#### 📂 Available Materials
-
+**Available Materials:**
 - Workshop transcriptions (restricted access)
 - Coding framework and thematic categories
 - Barrier mapping results
 - Qualitative datasets
 
-[📁 **View qualitative analysis directory**](Analysis_Qualitative/)
-
-</div>
+[View qualitative analysis directory](Analysis_Qualitative/)
 
 ---
 
-## 🎨 Participatory Workshops
-
-<div style="background: #fffbf0; padding: 20px; border-radius: 8px; border-left: 4px solid #ffd700; margin: 15px 0;">
+## Participatory Workshops
 
 ### Visual Documentation & Methodology
 
-**[📸 Explore the complete workshop gallery →](WORKSHOP.md)**
+**[Explore the complete workshop gallery](WORKSHOP.md)**
 
 Interactive co-design workshops conducted across three municipalities with rich visual documentation.
 
-#### 🔧 Workshop Activities
-
+**Workshop Activities:**
 1. **Ideal Meal Construction** - Using visual food models and portion cards
 2. **Menu Planning** - Building complete daily menu with group consensus
 3. **Self-Assessment** - Rating diet-ideal alignment (1-5 scale)
 4. **Barrier Mapping** - Discussing real-world constraints
 
-#### 📂 Workshop Materials
+**Workshop Materials:**
 
 | Material | Access |
 |----------|--------|
-| [📋 **Participant Forms**](Participatory_Workshop_Forms/) | PDF templates |
-| [📸 **Photo Gallery**](Participatory_Workshop_Evidence-Transcriptions/Pictures/) | Meal photos by region |
-| [📝 **Transcriptions**](Participatory_Workshop_Evidence-Transcriptions/Transcriptions/) | Restricted access |
-| [🎨 **Visual Guide**](WORKSHOP.md) | Complete methodology |
-
-</div>
+| [Participant Forms](Participatory_Workshop_Forms/) | PDF templates |
+| [Photo Gallery](Participatory_Workshop_Evidence-Transcriptions/Pictures/) | Meal photos by region |
+| [Transcriptions](Participatory_Workshop_Evidence-Transcriptions/Transcriptions/) | Restricted access |
+| [Visual Guide](WORKSHOP.md) | Complete methodology |
 
 ---
 
-## 💾 Open Data
-
-<div style="background: #f0f0f0; padding: 20px; border-radius: 8px; border-left: 4px solid #586069; margin: 15px 0;">
+## Open Data
 
 ### Available Resources
 
 | Resource Type | Description | Location |
 |---------------|-------------|----------|
-| 📊 **Processed Datasets** | GABAS and RIEN calculations | [Analysis_Quantitative/](Analysis_Quantitative/) |
-| 🍽️ **Food Group Data** | Servings from co-designed menus | `.rds` and `.xlsx` files |
-| 🧪 **Nutrient Estimates** | Adequacy calculations | Included in datasets |
-| 📜 **R Scripts** | Complete analysis pipeline | `01_GenDataSet.R` through `04_*` |
-| 📸 **Visual Data** | Workshop photos | [Pictures/](Participatory_Workshop_Evidence-Transcriptions/Pictures/) |
-| 📋 **Forms & Templates** | Workshop materials | [Forms/](Participatory_Workshop_Forms/) |
+| **Processed Datasets** | GABAS and RIEN calculations | [Analysis_Quantitative/](Analysis_Quantitative/) |
+| **Food Group Data** | Servings from co-designed menus | `.rds` and `.xlsx` files |
+| **Nutrient Estimates** | Adequacy calculations | Included in datasets |
+| **R Scripts** | Complete analysis pipeline | `01_GenDataSet.R` through `04_*` |
+| **Visual Data** | Workshop photos | [Pictures/](Participatory_Workshop_Evidence-Transcriptions/Pictures/) |
+| **Forms & Templates** | Workshop materials | [Forms/](Participatory_Workshop_Forms/) |
 
-### 🔄 Reproducibility
+### Reproducibility
 
 All analyses are **fully reproducible**. Follow these guides:
+- [QUICKSTART.md](QUICKSTART.md) - Step-by-step setup instructions
+- [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute
+- [DEPLOYMENT.md](DEPLOYMENT.md) - Deploy your own version
 
-- [⚡ **QUICKSTART.md**](QUICKSTART.md) - Step-by-step setup instructions
-- [🤝 **CONTRIBUTING.md**](CONTRIBUTING.md) - How to contribute
-- [🚀 **DEPLOYMENT.md**](DEPLOYMENT.md) - Deploy your own version
-
-### 📥 Data Access
+### Data Access
 
 Most data is **openly available** in this repository. Some materials (transcriptions) have restricted access to protect participant privacy.
 
-</div>
-
 ---
 
-## 📖 How to Cite
+## How to Cite
 
-<div style="background: #f0f7ff; padding: 20px; border-radius: 8px; margin: 15px 0;">
-
-### 📄 Paper Citation
+### Paper Citation
 
 **APA:**
 ```
@@ -275,7 +229,7 @@ shaping food choice in rural Colombia. Food Policy, 199, 102756.
 }
 ```
 
-### 💾 Repository Citation
+### Repository Citation
 
 Use GitHub's "Cite this repository" feature in the sidebar, or:
 
@@ -287,33 +241,27 @@ https://github.com/jcmunozmora/food-perception-rural-colombia
 
 See [CITATION.cff](CITATION.cff) for structured metadata.
 
-</div>
-
 ---
 
-## 📬 Contact & Support
+## Contact & Support
 
-<div style="background: #f6f8fa; padding: 20px; border-radius: 8px; margin: 15px 0;">
-
-### 👤 Corresponding Author
+### Corresponding Author
 
 **Ana María Arcila-Agudelo**  
-📧 [ana.arcila@uniremington.edu.co](mailto:ana.arcila@uniremington.edu.co)  
-🏛️ Corporación Universitaria Remington
+Email: [ana.arcila@uniremington.edu.co](mailto:ana.arcila@uniremington.edu.co)  
+Corporación Universitaria Remington
 
-### 💬 Questions & Collaboration
+### Questions & Collaboration
 
 - **Data Access:** Email corresponding author
 - **Methods & Analysis:** See [CONTRIBUTING.md](CONTRIBUTING.md)
 - **Technical Issues:** [Open an issue on GitHub](https://github.com/jcmunozmora/food-perception-rural-colombia/issues)
 
-### 🔗 Links
+### Links
 
-- 📄 [Full Paper (PDF)](Arcila_etat_2026.pdf)
-- 💻 [GitHub Repository](https://github.com/jcmunozmora/food-perception-rural-colombia)
-- 📚 [Complete Author Info](AUTHORS.md)
-
-</div>
+- [Full Paper (PDF)](Arcila_etat_2026.pdf)
+- [GitHub Repository](https://github.com/jcmunozmora/food-perception-rural-colombia)
+- [Complete Author Info](AUTHORS.md)
 
 ---
 
