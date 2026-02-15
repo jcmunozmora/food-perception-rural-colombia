@@ -1,0 +1,711 @@
+---
+title: "Quantitative Analysis: Nutritional Benchmarking"
+subtitle: "Comparing Co-designed Menus with Colombian Nutritional References"
+author: "Arcila-Agudelo, A.M., Cardona-Trujillo, H., et al."
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    code-fold: true
+    code-summary: "Show code"
+    theme: cosmo
+    embed-resources: true
+    fig-width: 10
+    fig-height: 6
+execute:
+  warning: false
+  message: false
+  cache: false
+  eval: false
+---
+
+# Introduction
+
+This analysis compares ideal menus co-designed in participatory workshops with Colombian nutritional references. The workshops were conducted in three regions (Medellín, Guarne, Santa Rosa de Osos) with three age groups (19-30, 31-50, 50+ years).
+
+## Nutritional References
+
+- **GABAS** (Guías Alimentarias Basadas en Alimentos): Colombian Food-Based Dietary Guidelines that recommend daily servings by food group
+- **RIEN** (Recomendaciones de Ingesta de Energía y Nutrientes): Recommended intake of energy and nutrients for the Colombian population
+
+## Analysis Flow
+
+```{mermaid}
+graph TD
+    A[Bases de datos.xlsx] --> B[01_GenDataSet.R]
+    B --> C[DS_Talleres_RIEN.rds]
+    B --> D[DS_Talleres_GABAS.rds]
+    C --> E[02_Gen_Graph_RIEN.R]
+    D --> F[03_Gen_Graph_GABAS.R]
+    C --> G[04_Gen_Graph_Nutrients.R]
+    E --> H[RIEN Graphs]
+    F --> I[GABAS Graphs]
+    G --> J[Nutritional Heatmap]
+```
+
+# Setup and Dependencies
+
+::: {.callout-note}
+## Prerequisites
+Before running this analysis, ensure you have:
+- R (version 4.0 or higher)
+- Required R packages: `tidyverse`, `readxl`, `writexl`, `ggplot2`, `reshape2`
+- Input data file: `Bases de datos.xlsx`
+
+Run `source("# Required libraries.r")` to install all dependencies.
+:::
+
+```{r setup}
+#| label: setup
+#| eval: true
+#| code-summary: "Check environment"
+
+cat("✓ R version:", R.version.string, "\n")
+cat("✓ Working directory:", getwd(), "\n")
+
+# Check for key input files
+if (file.exists("Bases de datos.xlsx")) {
+  cat("✓ Input data file found\n")
+} else {
+  cat("⚠ Warning: 'Bases de datos.xlsx' not found\n")
+}
+
+# Check for output datasets
+if (file.exists("DS_Talleres_RIEN.rds")) {
+  cat("✓ RIEN dataset found\n")
+} else {
+  cat("ℹ Note: Run 01_GenDataSet.R to generate RIEN dataset\n")
+}
+
+if (file.exists("DS_Talleres_GABAS.rds")) {
+  cat("✓ GABAS dataset found\n")
+} else {
+  cat("ℹ Note: Run 01_GenDataSet.R to generate GABAS dataset\n")
+}
+```
+
+# 1. Dataset Generation {#sec-dataset}
+
+This step processes raw workshop data and generates structured datasets for comparison with nutritional references.
+
+## 1.1 Load Workshop Data
+
+```{r load-data}
+#| label: load-data
+#| code-summary: "Load raw workshop data"
+
+# Read food weight data from workshops
+ds <- readxl::read_xlsx("Bases de datos.xlsx", sheet = "Gramaje")
+
+# Read GABAS equivalence table
+eqv_gabas <- readxl::read_xlsx("Bases de datos.xlsx", 
+                               sheet = "equiv_table_GABAS")
+
+# Select and rename relevant columns
+ds <- ds %>% 
+  dplyr::select(
+    ID, Region, Grupo, Plato, 
+    `Grupo alimentario`, Alimento, `Porción final`,
+    `Calorias porción elegida`, 
+    `Proteina porción elegida`,
+    `Carbohidratos por porción elegida`,
+    `Grasas por porción elegida`,
+    `Fibra por porción elegida`,
+    `Calcio por porción elegida`,
+    `Hierro por porción elegida`,
+    `Sodio por porción elegida`
+  )
+
+# Rename for easier manipulation
+names(ds) <- c(
+  "ID", "Region", "Grupo", "Plato", "G_Alimento", "Alimento", "Porcion",
+  "Calorias", "Proteina", "CHO", "Grasas", "Fibra", "Calcio",
+  "Hierro", "Sodio"
+)
+
+# Merge with GABAS equivalence table
+ds <- merge(ds, eqv_gabas)
+ds <- ds %>% 
+  select(ID, Region, Grupo, G_Alimento, G_Alimento_GABA, 
+         Plato, Alimento:Sodio)
+
+# Standardize region name
+ds <- ds %>% 
+  mutate(Region = ifelse(Region == "Medellín", "Medellin", Region))
+
+cat("✓ Workshop data loaded and prepared\n")
+cat("  - Total records:", nrow(ds), "\n")
+cat("  - Regions:", paste(unique(ds$Region), collapse = ", "), "\n")
+cat("  - Age groups:", paste(unique(ds$Grupo), collapse = ", "), "\n")
+```
+
+### Data Overview
+
+```{r data-overview}
+#| label: data-overview
+#| tbl-cap: "Sample of workshop food selection data"
+
+ds %>% 
+  select(Region, Grupo, G_Alimento_GABA, Alimento, Porcion, Calorias) %>%
+  head(10) %>%
+  kable(digits = 2)
+```
+
+## 1.2 GABAS Analysis
+
+Calculate total servings by region, GABAS food group, and age group.
+
+```{r gabas-dataset}
+#| label: gabas-dataset
+#| code-summary: "Generate GABAS dataset"
+
+# Calculate total servings by region, food group, and age group
+ds_GABAS <- ds %>% 
+  group_by(Region, G_Alimento_GABA, Grupo) %>% 
+  summarise(Porcion = sum(Porcion, na.rm = TRUE), .groups = "drop")
+
+# Load GABAS reference values
+gabas_ref <- readxl::read_xlsx("Bases de datos.xlsx", 
+                               sheet = "GABAS_Referencias")
+
+# Merge with references
+ds_GABAS <- merge(ds_GABAS, gabas_ref, 
+                  by.x = c("G_Alimento_GABA", "Grupo"), 
+                  by.y = c("G_Alimento_GABA", "Grupo"),
+                  all.x = TRUE)
+
+# Save dataset
+saveRDS(ds_GABAS, "DS_Talleres_GABAS.rds")
+write_xlsx(ds_GABAS, "DS_Talleres_GABAS.xlsx")
+
+cat("✓ GABAS dataset generated\n")
+cat("  - Food groups:", length(unique(ds_GABAS$G_Alimento_GABA)), "\n")
+```
+
+### GABAS Dataset Summary
+
+```{r gabas-summary}
+#| label: gabas-summary
+#| tbl-cap: "GABAS servings by food group and region"
+
+ds_GABAS %>%
+  select(Region, Grupo, G_Alimento_GABA, Porcion, porcion_ref) %>%
+  arrange(Region, Grupo, G_Alimento_GABA) %>%
+  head(15) %>%
+  kable(digits = 2, col.names = c("Region", "Age Group", "Food Group", 
+                                    "Workshop Servings", "Reference Servings"))
+```
+
+## 1.3 RIEN Analysis
+
+Calculate nutritional adequacy compared to RIEN recommendations.
+
+```{r rien-dataset}
+#| label: rien-dataset
+#| code-summary: "Generate RIEN dataset"
+
+# Aggregate nutrients by region and age group
+ds_RIEN <- ds %>% 
+  group_by(Region, Grupo) %>% 
+  summarise(
+    Calorias = sum(Calorias, na.rm = TRUE),
+    Proteina = sum(Proteina, na.rm = TRUE),
+    CHO = sum(CHO, na.rm = TRUE),
+    Grasas = sum(Grasas, na.rm = TRUE),
+    Fibra = sum(Fibra, na.rm = TRUE),
+    Calcio = sum(Calcio, na.rm = TRUE),
+    Hierro = sum(Hierro, na.rm = TRUE),
+    Sodio = sum(Sodio, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Load RIEN reference values
+rien_ref <- readxl::read_xlsx("Bases de datos.xlsx", sheet = "RIEN")
+
+# Merge with references
+ds_RIEN <- merge(ds_RIEN, rien_ref, by = "Grupo", all.x = TRUE)
+
+# Save dataset
+saveRDS(ds_RIEN, "DS_Talleres_RIEN.rds")
+write_xlsx(ds_RIEN, "DS_Talleres_RIEN.xlsx")
+
+cat("✓ RIEN dataset generated\n")
+cat("  - Nutrients analyzed: 8 (Energy, Protein, CHO, Fat, Fiber, Ca, Fe, Na)\n")
+```
+
+### RIEN Dataset Summary
+
+```{r rien-summary}
+#| label: rien-summary
+#| tbl-cap: "Nutritional adequacy: workshop menus vs RIEN recommendations"
+
+ds_RIEN %>%
+  select(Region, Grupo, Calorias, Calorias_ref, Proteina, Proteina_RDA) %>%
+  mutate(
+    Cal_Adequacy = round((Calorias / Calorias_ref) * 100, 1),
+    Prot_Adequacy = round((Proteina / Proteina_RDA) * 100, 1)
+  ) %>%
+  select(Region, Grupo, Calorias, Calorias_ref, Cal_Adequacy, 
+         Proteina, Proteina_RDA, Prot_Adequacy) %>%
+  kable(col.names = c("Region", "Age Group", "Calories", "Ref", "% Adeq",
+                       "Protein (g)", "Ref", "% Adeq"))
+```
+
+# 2. RIEN Visualization {#sec-rien}
+
+Generate graphs comparing nutritional adequacy of co-designed menus with RIEN recommendations.
+
+## 2.1 Graph Function
+
+```{r rien-function}
+#| label: rien-function
+#| code-summary: "Define RIEN visualization function"
+
+# Create combined label for visualization
+ds_RIEN$x <- paste0(ds_RIEN$Region, " - ", ds_RIEN$Grupo)
+
+# Function to create adequacy graphs
+get_graph_r <- function(ds, val) {
+  names(ds) <- c("x", "value1", "value2", "mymean")
+  
+  p <- ggplot(ds) +
+    geom_point(aes(x = x, y = mymean), pch = 8, size = 2, shape = 18) +
+    geom_segment(aes(x = x, xend = x, y = value1, yend = value2), 
+                 color = "grey") +
+    geom_point(aes(x = x, y = value1), 
+               color = rgb(0.2, 0.7, 0.1, 0.5), size = 3) +
+    geom_point(aes(x = x, y = value2), 
+               color = rgb(0.7, 0.2, 0.1, 0.5), size = 3) +
+    coord_flip() +
+    theme_ipsum() +
+    theme(legend.position = "none") +
+    xlab("") +
+    ylab(val)
+  
+  # Save graph
+  ggsave(paste0("graphs/reg_", val, ".png"), plot = p, 
+         width = 10, height = 6, dpi = 300)
+  
+  return(p)
+}
+
+cat("✓ RIEN visualization function defined\n")
+```
+
+## 2.2 Macronutrient Adequacy
+
+### Energy (Calories)
+
+```{r rien-calories}
+#| label: rien-calories
+#| fig-cap: "Energy adequacy by region and age group"
+
+get_graph_r(
+  ds_RIEN[, c("x", "Calorias_ref", "Calorias_ref", "Calorias")],
+  "Calorias"
+)
+```
+
+::: {.callout-note}
+- **Green point**: Reference value (recommended energy intake)
+- **Black diamond**: Average from co-designed menus
+- **Gray line**: Difference between workshop value and reference
+:::
+
+### Protein
+
+```{r rien-protein}
+#| label: rien-protein
+#| fig-cap: "Protein adequacy by region and age group"
+
+get_graph_r(
+  ds_RIEN[, c("x", "Proteina_RDA", "Proteina_EAR", "Proteina")],
+  "Proteina"
+)
+```
+
+### Carbohydrates
+
+```{r rien-cho}
+#| label: rien-cho
+#| fig-cap: "Carbohydrate adequacy by region and age group"
+
+get_graph_r(
+  ds_RIEN[, c("x", "CHO_EAR", "CHO_RDA", "CHO")],
+  "CHO"
+)
+```
+
+### Fats
+
+```{r rien-fats}
+#| label: rien-fats
+#| fig-cap: "Fat adequacy by region and age group"
+
+get_graph_r(
+  ds_RIEN[, c("x", "Grasas_AI_min", "Grasas_AI_max", "Grasas")],
+  "Grasas"
+)
+```
+
+### Fiber
+
+```{r rien-fiber}
+#| label: rien-fiber
+#| fig-cap: "Fiber adequacy by region and age group"
+
+get_graph_r(
+  ds_RIEN[, c("x", "Fribra_AI", "Fribra_AI", "Fibra")],
+  "Fibra"
+)
+```
+
+## 2.3 Micronutrient Adequacy
+
+### Calcium
+
+```{r rien-calcium}
+#| label: rien-calcium
+#| fig-cap: "Calcium adequacy by region and age group"
+
+get_graph_r(
+  ds_RIEN[, c("x", "Calcio_EAR", "Calcio_RDA", "Calcio")],
+  "Calcio"
+)
+```
+
+### Iron
+
+```{r rien-iron}
+#| label: rien-iron
+#| fig-cap: "Iron adequacy by region and age group"
+
+get_graph_r(
+  ds_RIEN[, c("x", "Hierro_EAR", "Hierro_RDA", "Hierro")],
+  "Hierro"
+)
+```
+
+### Sodium
+
+```{r rien-sodium}
+#| label: rien-sodium
+#| fig-cap: "Sodium adequacy by region and age group"
+
+get_graph_r(
+  ds_RIEN[, c("x", "Sodio_AI", "Sodio_AI", "Sodio")],
+  "Sodio"
+)
+```
+
+## 2.4 Overall Nutrient Comparison
+
+### Macronutrients
+
+```{r rien-macro-all}
+#| label: rien-macro-all
+#| fig-cap: "Macronutrient comparison across all groups"
+#| fig-height: 8
+
+macro_rien <- ds_RIEN %>% 
+  select(Grupo, Proteina, CHO, Grasas, Proteina_EAR,
+         Proteina_RDA, CHO_EAR, CHO_RDA, Grasas_AI_min, Grasas_AI_max)
+
+# Reshape for visualization
+macro_long <- macro_rien %>%
+  select(Grupo, Proteina, CHO, Grasas) %>%
+  pivot_longer(cols = -Grupo, names_to = "Nutrient", values_to = "Value")
+
+ggplot(macro_long, aes(x = Grupo, y = Value, fill = Nutrient)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_ipsum() +
+  labs(x = "Age Group", y = "Amount (g)", 
+       title = "Macronutrient Content in Co-designed Menus") +
+  theme(legend.position = "bottom")
+
+ggsave("graphs/ALL_Macronutrientes.png", width = 10, height = 8, dpi = 300)
+```
+
+### Micronutrients
+
+```{r rien-micro-all}
+#| label: rien-micro-all
+#| fig-cap: "Micronutrient comparison across all groups"
+#| fig-height: 8
+
+micro_rien <- ds_RIEN %>% 
+  select(Grupo, Calcio, Hierro, Sodio)
+
+# Reshape for visualization
+micro_long <- micro_rien %>%
+  pivot_longer(cols = -Grupo, names_to = "Nutrient", values_to = "Value")
+
+ggplot(micro_long, aes(x = Grupo, y = Value, fill = Nutrient)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_ipsum() +
+  labs(x = "Age Group", y = "Amount (mg)", 
+       title = "Micronutrient Content in Co-designed Menus") +
+  theme(legend.position = "bottom")
+
+ggsave("graphs/ALL_Micronutrientes.png", width = 10, height = 8, dpi = 300)
+```
+
+# 3. GABAS Visualization {#sec-gabas}
+
+Compare servings by food group with GABAS recommendations.
+
+## 3.1 Graph Function
+
+```{r gabas-function}
+#| label: gabas-function
+#| code-summary: "Define GABAS visualization function"
+
+# Load GABAS dataset
+ds_GABAS <- read_rds("DS_Talleres_GABAS.rds")
+
+# Create combined label
+ds_GABAS$x <- paste0(ds_GABAS$Region, " - ", ds_GABAS$G_Alimento_GABA)
+
+# Function to create GABAS graphs
+get_graph_gabas <- function(ds, titulo = "Porciones GABAS", filename = "GABAS") {
+  
+  p <- ggplot(ds, aes(x = x, y = Porcion)) +
+    geom_point(aes(y = porcion_ref), 
+               color = rgb(0.2, 0.7, 0.1, 0.7), 
+               size = 4, shape = 18) +
+    geom_segment(aes(x = x, xend = x, y = Porcion, yend = porcion_ref), 
+                 color = "grey", linewidth = 1) +
+    geom_point(color = rgb(0.7, 0.2, 0.1, 0.7), size = 3) +
+    coord_flip() +
+    theme_ipsum() +
+    theme(legend.position = "none") +
+    labs(title = titulo, x = "", y = "Servings")
+  
+  ggsave(paste0("graphs/", filename, ".png"), plot = p,
+         width = 12, height = 8, dpi = 300)
+  
+  return(p)
+}
+
+cat("✓ GABAS visualization function defined\n")
+```
+
+## 3.2 GABAS Servings by Region
+
+### Medellín
+
+```{r gabas-medellin}
+#| label: gabas-medellin
+#| fig-cap: "GABAS servings comparison - Medellín"
+#| fig-height: 8
+
+ds_medellin <- ds_GABAS %>% filter(Region == "Medellin")
+get_graph_gabas(ds_medellin, "GABAS - Medellín", "GABAS_Medellin")
+```
+
+### Guarne
+
+```{r gabas-guarne}
+#| label: gabas-guarne
+#| fig-cap: "GABAS servings comparison - Guarne"
+#| fig-height: 8
+
+ds_guarne <- ds_GABAS %>% filter(Region == "Guarne")
+get_graph_gabas(ds_guarne, "GABAS - Guarne", "GABAS_Guarne")
+```
+
+### Santa Rosa de Osos
+
+```{r gabas-santarosa}
+#| label: gabas-santarosa
+#| fig-cap: "GABAS servings comparison - Santa Rosa de Osos"
+#| fig-height: 8
+
+ds_santarosa <- ds_GABAS %>% filter(Region == "Santa Rosa de Osos")
+get_graph_gabas(ds_santarosa, "GABAS - Santa Rosa de Osos", "GABAS_SantaRosa")
+```
+
+## 3.3 GABAS Summary by Food Group
+
+```{r gabas-summary-table}
+#| label: gabas-summary-table
+#| tbl-cap: "Average servings by food group across all regions"
+
+ds_GABAS %>%
+  group_by(G_Alimento_GABA, Grupo) %>%
+  summarise(
+    Workshop_Servings = mean(Porcion, na.rm = TRUE),
+    Reference_Servings = mean(porcion_ref, na.rm = TRUE),
+    Difference = Workshop_Servings - Reference_Servings,
+    .groups = "drop"
+  ) %>%
+  arrange(G_Alimento_GABA, Grupo) %>%
+  kable(digits = 2, col.names = c("Food Group", "Age Group", 
+                                    "Workshop", "Reference", "Difference"))
+```
+
+# 4. Nutritional Heatmap {#sec-heatmap}
+
+Visualize nutritional adequacy across all nutrients and groups.
+
+```{r heatmap}
+#| label: heatmap
+#| fig-cap: "Nutritional adequacy heatmap"
+#| fig-width: 12
+#| fig-height: 8
+
+# Calculate adequacy percentages
+adequacy <- ds_RIEN %>%
+  mutate(
+    Cal_Adeq = (Calorias / Calorias_ref) * 100,
+    Prot_Adeq = (Proteina / Proteina_RDA) * 100,
+    CHO_Adeq = (CHO / CHO_RDA) * 100,
+    Fat_Adeq = (Grasas / ((Grasas_AI_min + Grasas_AI_max) / 2)) * 100,
+    Fiber_Adeq = (Fibra / Fribra_AI) * 100,
+    Ca_Adeq = (Calcio / Calcio_RDA) * 100,
+    Fe_Adeq = (Hierro / Hierro_RDA) * 100,
+    Na_Adeq = (Sodio / Sodio_AI) * 100
+  ) %>%
+  select(Region, Grupo, ends_with("_Adeq"))
+
+# Reshape for heatmap
+adequacy_long <- adequacy %>%
+  pivot_longer(cols = ends_with("_Adeq"), 
+               names_to = "Nutrient", 
+               values_to = "Adequacy") %>%
+  mutate(
+    Nutrient = str_remove(Nutrient, "_Adeq"),
+    Group_Label = paste(Region, Grupo, sep = " - ")
+  )
+
+# Create heatmap
+ggplot(adequacy_long, aes(x = Nutrient, y = Group_Label, fill = Adequacy)) +
+  geom_tile(color = "white", linewidth = 0.5) +
+  geom_text(aes(label = round(Adequacy, 0)), color = "black", size = 3) +
+  scale_fill_gradient2(
+    low = "red", mid = "yellow", high = "green",
+    midpoint = 100, limit = c(0, 200),
+    name = "Adequacy (%)"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.title = element_blank(),
+    panel.grid = element_blank()
+  ) +
+  labs(title = "Nutritional Adequacy Heatmap: Workshop Menus vs RIEN References")
+
+ggsave("graphs/panel_b_heatmap.png", width = 12, height = 8, dpi = 300)
+```
+
+::: {.callout-tip}
+## Interpretation Guide
+- **Green cells (>100%)**: Nutrient exceeds recommendations
+- **Yellow cells (~100%)**: Nutrient meets recommendations
+- **Red cells (<100%)**: Nutrient below recommendations
+:::
+
+# 5. Key Findings
+
+## 5.1 GABAS Compliance
+
+```{r gabas-findings}
+#| label: gabas-findings
+#| code-summary: "Calculate GABAS compliance statistics"
+
+gabas_compliance <- ds_GABAS %>%
+  mutate(
+    Difference = Porcion - porcion_ref,
+    Percent_Diff = (Difference / porcion_ref) * 100,
+    Status = case_when(
+      abs(Percent_Diff) <= 10 ~ "Adequate",
+      Percent_Diff > 10 ~ "Excessive",
+      Percent_Diff < -10 ~ "Insufficient"
+    )
+  ) %>%
+  count(Status) %>%
+  mutate(Percentage = (n / sum(n)) * 100)
+
+kable(gabas_compliance, digits = 1,
+      col.names = c("Compliance Status", "Count", "Percentage (%)"),
+      caption = "GABAS compliance summary")
+```
+
+## 5.2 RIEN Adequacy
+
+```{r rien-findings}
+#| label: rien-findings
+#| code-summary: "Calculate RIEN adequacy statistics"
+
+# Calculate mean adequacy across all groups
+mean_adequacy <- adequacy %>%
+  summarise(across(ends_with("_Adeq"), mean, na.rm = TRUE)) %>%
+  pivot_longer(everything(), names_to = "Nutrient", values_to = "Mean_Adequacy") %>%
+  mutate(
+    Nutrient = str_remove(Nutrient, "_Adeq"),
+    Status = case_when(
+      Mean_Adequacy >= 90 & Mean_Adequacy <= 110 ~ "Adequate",
+      Mean_Adequacy > 110 ~ "High",
+      Mean_Adequacy < 90 ~ "Low"
+    )
+  )
+
+kable(mean_adequacy, digits = 1,
+      col.names = c("Nutrient", "Mean Adequacy (%)", "Status"),
+      caption = "Mean nutritional adequacy across all groups")
+```
+
+## 5.3 Regional Differences
+
+```{r regional-differences}
+#| label: regional-differences
+#| fig-cap: "Regional comparison of caloric adequacy"
+
+ggplot(ds_RIEN, aes(x = Region, y = (Calorias / Calorias_ref) * 100, 
+                     fill = Grupo)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  theme_ipsum() +
+  labs(x = "Region", y = "Caloric Adequacy (%)", 
+       fill = "Age Group",
+       title = "Caloric Adequacy by Region and Age Group") +
+  theme(legend.position = "bottom")
+```
+
+# 6. Conclusions
+
+## Main Findings
+
+1. **GABAS Compliance**: The co-designed menus show varying compliance with GABAS recommendations across food groups.
+
+2. **Nutritional Adequacy**: Mean adequacy varies by nutrient, with some nutrients meeting recommendations while others fall short.
+
+3. **Regional Variations**: Significant differences exist between regions, reflecting local food preferences and availability.
+
+4. **Age Group Considerations**: Nutritional adequacy differs by age group, with specific nutrients requiring attention in certain demographics.
+
+## Recommendations
+
+- Focus on increasing servings of food groups with low adequacy
+- Address excessive servings where identified
+- Consider regional preferences while promoting nutritional balance
+- Tailor interventions to specific age group needs
+
+# Session Information
+
+```{r session-info}
+#| label: session-info
+#| code-summary: "R session information"
+
+sessionInfo()
+```
+
+---
+
+**Citation**: Arcila-Agudelo, A.M., Cardona-Trujillo, H., et al. (2026). Nutritional adequacy of co-designed food systems in rural Colombia. *Food Policy*, 199, 102756.
+
+**Data Availability**: All data and code are available at [github.com/jcmunozmora/food-perception-rural-colombia](https://github.com/jcmunozmora/food-perception-rural-colombia)
+
+**License**: CC-BY 4.0

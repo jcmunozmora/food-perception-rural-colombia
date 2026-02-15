@@ -2,7 +2,24 @@
 
 This directory contains quantitative analysis scripts that compare ideal menus co-designed in participatory workshops with Colombian nutritional references.
 
-## 📊 Analysis Flow
+## � Quick Start
+
+### Option 1: Interactive Quarto Report (Recommended)
+
+View the complete analysis in an interactive HTML report:
+
+```bash
+quarto render analysis.qmd
+open analysis.html
+```
+
+The [analysis.qmd](analysis.qmd) document integrates all scripts with narrative explanations, visualizations, and key findings in a reproducible format.
+
+### Option 2: Run Scripts Individually
+
+Follow the sequential workflow described below to run each script separately.
+
+## �📊 Analysis Flow
 
 The analysis follows a sequential 4-step flow:
 

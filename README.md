@@ -92,6 +92,8 @@ Participatory co-design workshops are the methodological heart of this study. Th
 
 Quantitative analysis compares co-designed menus with Colombian food-based dietary guidelines (GABAS) and recommended nutrient intakes (RIEN).
 
+> **📖 Interactive Report:** View the complete analysis in the [Quarto Report](Analysis_Quantitative/analysis.html) - an integrated document with all scripts, visualizations, and findings.
+
 ### Analysis Flow
 
 ```
